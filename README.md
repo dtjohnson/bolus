@@ -6,22 +6,34 @@ foo
 **Kind**: global class  
 
 * [Injector](#Injector)
-  * [new Injector()](#new_Injector_new)
-  * [.register(name, fn)](#Injector+register)
-  * [.registerValue(name, value)](#Injector+registerValue)
-  * [.registerPath(patterns, [globOptions])](#Injector+registerPath)
-  * [.registerRequires(reqs, [mod])](#Injector+registerRequires) ⇒ <code>[Injector](#Injector)</code>
-  * [.resolve(names)](#Injector+resolve) ⇒ <code>\*</code> &#124; <code>Array.&lt;\*&gt;</code>
-  * [.resolve(fn, [locals])](#Injector+resolve) ⇒ <code>\*</code>
-  * [.resolvePath(p, [locals])](#Injector+resolvePath) ⇒ <code>\*</code>
+  * [new Injector([nameMaker])](#new_Injector_new)
+  * _instance_
+    * [.register(name, fn)](#Injector+register)
+    * [.registerValue(name, value)](#Injector+registerValue)
+    * [.registerPath(patterns, [globOptions])](#Injector+registerPath)
+    * [.registerRequires(reqs, [mod])](#Injector+registerRequires) ⇒ <code>[Injector](#Injector)</code>
+    * [.resolve(names)](#Injector+resolve) ⇒ <code>\*</code> &#124; <code>Array.&lt;\*&gt;</code>
+    * [.resolve(fn, [locals])](#Injector+resolve) ⇒ <code>\*</code>
+    * [.resolvePath(p, [locals])](#Injector+resolvePath) ⇒ <code>\*</code>
+  * _inner_
+    * [~nameMakerCallback](#Injector..nameMakerCallback) : <code>function</code>
 
 <a name="new_Injector_new"></a>
-### new Injector()
+### new Injector([nameMaker])
 Initializes a new Injector.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [nameMaker] | <code>[nameMakerCallback](#Injector..nameMakerCallback)</code> | A function that creates a name for a module registered by path. |
 
 **Example**  
 ```js
 var injector = new Injector();
+```
+**Example**  
+```js
+var injector = new Injector(function (basename, realpath, fn) {    return basename.toUpperCase();});
 ```
 <a name="Injector+register"></a>
 ### injector.register(name, fn)
@@ -149,5 +161,17 @@ Resolve a module with the given path.
 
 **Example**  
 ```js
-var log = injector.resolve("path/to/log.js");
+var log = injector.resolvePath("path/to/log.js");
 ```
+<a name="Injector..nameMakerCallback"></a>
+### Injector~nameMakerCallback : <code>function</code>
+A function that creates a name for a module registered by path.
+
+**Kind**: inner typedef of <code>[Injector](#Injector)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| basename | <code>string</code> | The basename of the loaded module. |
+| realpath | <code>string</code> | The full path of the loaded module. |
+| fn | <code>function</code> | The actual module factory function. |
+
