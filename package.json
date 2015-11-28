@@ -1,0 +1,24 @@
+{
+  "name": "bolus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/Injector.js",
+  "scripts": {
+    "test": "jasmine-node test/",
+    "docs": "node docs/generate",
+    "jshint": "jshint --reporter=node_modules/jshint-stylish lib/",
+    "jscs": "jscs lib/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "glob-all": "^3.0.1"
+  },
+  "devDependencies": {
+    "jscs": "^2.6.0",
+    "jsdoc-to-markdown": "^1.2.1",
+    "jshint": "^2.9.1-rc1",
+    "jshint-stylish": "^2.1.0",
+    "replacestream": "^4.0.0"
+  }
+}
