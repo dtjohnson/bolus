@@ -9,8 +9,13 @@
     "jshint": "jshint --reporter=node_modules/jshint-stylish lib/",
     "jscs": "jscs lib/"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Dave T. Johnson <dave@dtjohnson.net>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dtjohnson/bolus.git"
+  },
+  "bugs": "https://github.com/dtjohnson/bolus/issues",
   "dependencies": {
     "glob-all": "^3.0.1"
   },
