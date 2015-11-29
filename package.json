@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/Injector.js",
   "scripts": {
-    "test": "jasmine-node test/",
+    "test": "jasmine",
     "docs": "node docs/generate",
     "jshint": "jshint --reporter=node_modules/jshint-stylish lib/",
     "jscs": "jscs lib/"
@@ -15,6 +15,7 @@
     "glob-all": "^3.0.1"
   },
   "devDependencies": {
+    "jasmine": "^2.3.2",
     "jscs": "^2.6.0",
     "jsdoc-to-markdown": "^1.2.1",
     "jshint": "^2.9.1-rc1",
