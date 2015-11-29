@@ -6,34 +6,25 @@ foo
 **Kind**: global class  
 
 * [Injector](#Injector)
-  * [new Injector([nameMaker])](#new_Injector_new)
+  * [new Injector()](#new_Injector_new)
   * _instance_
     * [.register(name, fn)](#Injector+register)
     * [.registerValue(name, value)](#Injector+registerValue)
-    * [.registerPath(patterns, [globOptions])](#Injector+registerPath)
+    * [.registerPath(patterns, [nameMaker])](#Injector+registerPath)
     * [.registerRequires(reqs, [mod])](#Injector+registerRequires) ⇒ <code>[Injector](#Injector)</code>
     * [.resolve(names)](#Injector+resolve) ⇒ <code>\*</code> &#124; <code>Array.&lt;\*&gt;</code>
     * [.resolve(fn, [locals])](#Injector+resolve) ⇒ <code>\*</code>
     * [.resolvePath(p, [locals])](#Injector+resolvePath) ⇒ <code>\*</code>
   * _inner_
-    * [~nameMakerCallback](#Injector..nameMakerCallback) : <code>function</code>
+    * [~nameMakerCallback](#Injector..nameMakerCallback) ⇒ <code>string</code>
 
 <a name="new_Injector_new"></a>
-### new Injector([nameMaker])
+### new Injector()
 Initializes a new Injector.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [nameMaker] | <code>[nameMakerCallback](#Injector..nameMakerCallback)</code> | A function that creates a name for a module registered by path. |
 
 **Example**  
 ```js
 var injector = new Injector();
-```
-**Example**  
-```js
-var injector = new Injector(function (basename, realpath, fn) {    return basename.toUpperCase();});
 ```
 <a name="Injector+register"></a>
 ### injector.register(name, fn)
@@ -70,7 +61,7 @@ Register a fixed value. (This is syntactic sugar for registering a function that
 // Register a function with the name "doubler".injector.registerValue("doubler", function (arg) {    return arg * 2;});
 ```
 <a name="Injector+registerPath"></a>
-### injector.registerPath(patterns, [globOptions])
+### injector.registerPath(patterns, [nameMaker])
 Register module(s) with the given path pattern(s).
 
 **Kind**: instance method of <code>[Injector](#Injector)</code>  
@@ -78,7 +69,7 @@ Register module(s) with the given path pattern(s).
 | Param | Type | Description |
 | --- | --- | --- |
 | patterns | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> | The pattern or patterns to match. This uses the [glob-all](https://github.com/jpillora/node-glob-all) module, which accepts negative patterns as well. |
-| [globOptions] | <code>Object</code> | Options to pass to [glob-all](https://github.com/jpillora/node-glob-all) and, in turn, [glob](https://github.com/isaacs/node-glob). |
+| [nameMaker] | <code>[nameMakerCallback](#Injector..nameMakerCallback)</code> | A function that creates a name for a module registered by path. |
 
 **Example**  
 ```js
@@ -87,6 +78,11 @@ Register module(s) with the given path pattern(s).
 **Example**  
 ```js
 // Register all JS files except spec files.injector.registerPath(["**/*.js", "!**/*.spec.js"]);
+ 
+```
+**Example**  
+```js
+injector.registerPath("path/to/module.js", function (defaultName, realpath, fn) {    return defaultName.toUpperCase();});
 ```
 <a name="Injector+registerRequires"></a>
 ### injector.registerRequires(reqs, [mod]) ⇒ <code>[Injector](#Injector)</code>
@@ -164,14 +160,15 @@ Resolve a module with the given path.
 var log = injector.resolvePath("path/to/log.js");
 ```
 <a name="Injector..nameMakerCallback"></a>
-### Injector~nameMakerCallback : <code>function</code>
+### Injector~nameMakerCallback ⇒ <code>string</code>
 A function that creates a name for a module registered by path.
 
 **Kind**: inner typedef of <code>[Injector](#Injector)</code>  
+**Returns**: <code>string</code> - The name to use (or falsy to use default).  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| basename | <code>string</code> | The basename of the loaded module. |
+| defaultName | <code>string</code> | The default name to use. This is equal to the value of the function's $name property or the basename of the file. |
 | realpath | <code>string</code> | The full path of the loaded module. |
 | fn | <code>function</code> | The actual module factory function. |
 

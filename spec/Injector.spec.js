@@ -1,11 +1,19 @@
 "use strict";
 
+var fs = require("fs");
 var Injector = require("../lib/Injector");
 
 describe("Injector", function () {
     var injector;
     beforeEach(function () {
         injector = new Injector();
+    });
+
+    describe("constructor", function () {
+        it("should register the injector as $injector", function () {
+            var $injector = injector.resolve("$injector");
+            expect($injector).toBe(injector);
+        });
     });
 
     describe("register", function () {
@@ -67,6 +75,24 @@ describe("Injector", function () {
             expect(function () {
                 injector.resolve("b");
             }).not.toThrow();
+        });
+
+        it("should use a name maker to change the default name", function () {
+            var nameMaker = jasmine.createSpy("nameMaker").and.callFake(function (defaultName, realpath, fn) {
+                return defaultName.toUpperCase();
+            });
+
+            injector.registerPath("spec/samples/a.js", nameMaker);
+            expect(function () {
+                injector.resolve("a");
+            }).toThrow();
+            expect(function () {
+                injector.resolve("A");
+            }).not.toThrow();
+
+            var realpath = fs.realpathSync("spec/samples/a.js");
+            var fn = require("./samples/a.js");
+            expect(nameMaker).toHaveBeenCalledWith("a", realpath, fn);
         });
     });
 
