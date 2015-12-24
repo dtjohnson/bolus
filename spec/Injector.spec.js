@@ -235,4 +235,30 @@ describe("Injector", function () {
             expect(args).toEqual(['a', 'b', 'c']);
         });
     });
+
+    describe("_getArgumentsFromString", function () {
+        it("should parse a normal function", function () {
+            var fn = "function (a, b) {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['a', 'b']);
+        });
+
+        it("should parse an arrow function with no arguments", function () {
+            var fn = "() => {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual([]);
+        });
+
+        it("should parse an arrow function with one argument", function () {
+            var fn = "foo => {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['foo']);
+        });
+
+        it("should parse an arrow function with multiple arguments", function () {
+            var fn = "(foo, bar) => {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['foo', 'bar']);
+        });
+    });
 });

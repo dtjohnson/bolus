@@ -281,10 +281,7 @@ Register a module.
 
 **Example**  
 ```js
-injector.register("foo", function (dependencyA, dependencyB) {
-    // Do something with dependencyA and dependencyB to initialize foo.
-    // Return any object.
-});
+injector.register("foo", function (dependencyA, dependencyB) {    // Do something with dependencyA and dependencyB to initialize foo.    // Return any object.});
 ```
 <a name="Injector+registerValue"></a>
 ### injector.registerValue(name, value)
@@ -299,15 +296,11 @@ Register a fixed value.
 
 **Example**  
 ```js
-// Register the value 5 with the name "foo".
-injector.registerValue("foo", 5);
+// Register the value 5 with the name "foo".injector.registerValue("foo", 5);
 ```
 **Example**  
 ```js
-// Register a function with the name "doubler".
-injector.registerValue("doubler", function (arg) {
-    return arg * 2;
-});
+// Register a function with the name "doubler".injector.registerValue("doubler", function (arg) {    return arg * 2;});
 ```
 <a name="Injector+registerPath"></a>
 ### injector.registerPath(patterns, [nameMaker])
@@ -322,19 +315,15 @@ Register module(s) with the given path pattern(s).
 
 **Example**  
 ```js
-// Register a single file.
-injector.registerPath("path/to/module.js");
+// Register a single file.injector.registerPath("path/to/module.js");
 ```
 **Example**  
 ```js
-// Register all JS files except spec files.
-injector.registerPath(["**/*.js", "!**/*.spec.js"]);
+// Register all JS files except spec files.injector.registerPath(["**/*.js", "!**/*.spec.js"]);
 ```
 **Example**  
 ```js
-injector.registerPath("path/to/module.js", function (defaultName, realpath, fn) {
-    return defaultName.toUpperCase();
-});
+injector.registerPath("path/to/module.js", function (defaultName, realpath, fn) {    return defaultName.toUpperCase();});
 ```
 <a name="Injector+registerRequires"></a>
 ### injector.registerRequires(reqs, [mod])
@@ -349,10 +338,7 @@ Requires modules and registers them with the name provided.
 
 **Example**  
 ```js
-injector.registerRequires({
-    fs: "fs",
-    Sequelize: "sequelize"
-});
+injector.registerRequires({    fs: "fs",    Sequelize: "sequelize"});
 ```
 <a name="Injector+resolve"></a>
 ### injector.resolve(names) ⇒ <code>\*</code> &#124; <code>Array.&lt;\*&gt;</code>
@@ -371,9 +357,7 @@ var log = injector.resolve("log");
 ```
 **Example**  
 ```js
-var resolved = injector.resolve(["fs", "log"]);
-var fs = resolved[0];
-var log = resolved[1];
+var resolved = injector.resolve(["fs", "log"]);var fs = resolved[0];var log = resolved[1];
 ```
 <a name="Injector+resolve"></a>
 ### injector.resolve(fn, [locals]) ⇒ <code>\*</code>
@@ -389,25 +373,15 @@ Resolve a module or multiple modules.
 
 **Example**  
 ```js
-// Resolve someNum and otherNum and set the result to the sum.
-var result;
-injector.resolve(function (someNum, otherNum) {
-    result = someNum + otherNum;
-});
+// Resolve someNum and otherNum and set the result to the sum.var result;injector.resolve(function (someNum, otherNum) {    result = someNum + otherNum;});
 ```
 **Example**  
 ```js
-// This is essentially the same thing using a return in the function.
-var result = injector.resolve(function (someNum, otherNum) {
-    return someNum + otherNum;
-});
+// This is essentially the same thing using a return in the function.var result = injector.resolve(function (someNum, otherNum) {    return someNum + otherNum;});
 ```
 **Example**  
 ```js
-// You can also provide or override dependencies using the locals argument.
-var result = injector.resolve(function (someNum, otherNum) {
-    return someNum + otherNum;
-}, { otherNum: 5 });
+// You can also provide or override dependencies using the locals argument.var result = injector.resolve(function (someNum, otherNum) {    return someNum + otherNum;}, { otherNum: 5 });
 ```
 <a name="Injector+resolvePath"></a>
 ### injector.resolvePath(p, [locals]) ⇒ <code>\*</code>
