@@ -260,5 +260,11 @@ describe("Injector", function () {
             var args = Injector._getArgumentsFromString(fn);
             expect(args).toEqual(['foo', 'bar']);
         });
+
+        it("should parse an arrow function that returns an arrow function", function () {
+            var fn = "(foo, bar) => (baz) => {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['foo', 'bar']);
+        });
     });
 });
