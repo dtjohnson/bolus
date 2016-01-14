@@ -266,5 +266,11 @@ describe("Injector", function () {
             var args = Injector._getArgumentsFromString(fn);
             expect(args).toEqual(['foo', 'bar']);
         });
+
+        it("should parse a function with new lines in the arguments", function () {
+            var fn = "function (\na, \n b, /* comment */ c, \n, d) {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['a', 'b', 'c', 'd']);
+        });
     });
 });
