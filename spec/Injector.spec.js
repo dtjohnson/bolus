@@ -267,6 +267,12 @@ describe("Injector", function () {
             expect(args).toEqual(['foo', 'bar']);
         });
 
+        it("should parse a function with an arrow in the body", function () {
+            var fn = "function (foo, bar) {\n// foo => bar  \n}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['foo', 'bar']);
+        });
+
         it("should parse a function with new lines in the arguments", function () {
             var fn = "function (\na, \n b, /* comment */ c, \n, d) {}";
             var args = Injector._getArgumentsFromString(fn);
