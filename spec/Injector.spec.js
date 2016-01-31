@@ -2,6 +2,7 @@
 
 var fs = require("fs");
 var Injector = require("../lib/Injector");
+var semver = require("semver");
 
 describe("Injector", function () {
     var injector;
@@ -37,8 +38,8 @@ describe("Injector", function () {
 
     describe("registerPath", function () {
         it("should add a node with a single file", function () {
-            injector.registerPath("spec/samples/a.js");
-            var a = require("./samples/a");
+            injector.registerPath("spec/samples/functions/a.js");
+            var a = require("./samples/functions/a");
             expect(function () {
                 injector.resolve("a");
             }).not.toThrow();
@@ -48,7 +49,7 @@ describe("Injector", function () {
         });
 
         it("should add nodes with an array of files", function () {
-            injector.registerPath(["spec/samples/a.js", "spec/samples/b.js"]);
+            injector.registerPath(["spec/samples/functions/a.js", "spec/samples/functions/b.js"]);
             expect(function () {
                 injector.resolve("a");
             }).not.toThrow();
@@ -58,7 +59,7 @@ describe("Injector", function () {
         });
 
         it("should add nodes with a wildcard pattern", function () {
-            injector.registerPath("spec/samples/*.js");
+            injector.registerPath("spec/samples/functions/*.js");
             expect(function () {
                 injector.resolve("a");
             }).not.toThrow();
@@ -68,12 +69,12 @@ describe("Injector", function () {
         });
 
         it("should add a single node with a wildcard pattern and negation", function () {
-            injector.registerPath(["spec/samples/*.js", "!spec/samples/a.js"]);
-            expect(function () {
-                injector.resolve("a");
-            }).toThrow();
+            injector.registerPath(["spec/samples/functions/*.js", "!spec/samples/functions/b.js"]);
             expect(function () {
                 injector.resolve("b");
+            }).toThrow();
+            expect(function () {
+                injector.resolve("a");
             }).not.toThrow();
         });
 
@@ -82,7 +83,7 @@ describe("Injector", function () {
                 return defaultName.toUpperCase();
             });
 
-            injector.registerPath("spec/samples/a.js", nameMaker);
+            injector.registerPath("spec/samples/functions/a.js", nameMaker);
             expect(function () {
                 injector.resolve("a");
             }).toThrow();
@@ -90,11 +91,26 @@ describe("Injector", function () {
                 injector.resolve("A");
             }).not.toThrow();
 
-            var realpath = fs.realpathSync("spec/samples/a.js");
-            var fn = require("./samples/a.js");
+            var realpath = fs.realpathSync("spec/samples/functions/a.js");
+            var fn = require("./samples/functions/a.js");
             expect(nameMaker).toHaveBeenCalledWith("a", realpath, fn);
         });
     });
+
+    // Classes are only available in v4+.
+    if (semver.major(process.version) >= 4) {
+        describe("registration with class", function () {
+            it("should work like functions", function () {
+                injector.registerPath("spec/samples/**/*.js");
+                expect(function () {
+                    var c = injector.resolve("c");
+                    var a = injector.resolve("a");
+                    expect(c._c).toBe("c");
+                    expect(c._a).toBe(a);
+                }).not.toThrow();
+            });
+        });
+    }
 
     describe("registerRequires", function () {
         it("should add nodes with the given names and required modules", function () {
@@ -205,9 +221,9 @@ describe("Injector", function () {
 
     describe("resolvePath", function () {
         it("should resolve a file", function () {
-            var a = injector.resolvePath("spec/samples/a.js");
+            var a = injector.resolvePath("spec/samples/functions/a.js");
 
-            var aFn = require("./samples/a.js");
+            var aFn = require("./samples/functions/a.js");
 
             // Need to use toEqual here since the require execution creates a new object.
             expect(a).toEqual(aFn());

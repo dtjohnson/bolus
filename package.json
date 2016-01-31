@@ -25,6 +25,7 @@
     "jsdoc-to-markdown": "^1.2.1",
     "jshint": "^2.9.1-rc1",
     "jshint-stylish": "^2.1.0",
-    "replacestream": "^4.0.0"
+    "replacestream": "^4.0.0",
+    "semver": "^5.1.0"
   }
 }
