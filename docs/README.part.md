@@ -172,7 +172,7 @@ Here, we have provided two different values for the dependency 'a'. Also, note t
 The above usage should be enough for most use cases. However, there are some more advanced features available if needed.
 
 #### Using Classes
-If you are using v4 or higher of Node.js, you can also create class module. This work similar to the functions but the dependencies are passed to the class constructor.
+If you are using v4 or higher of Node.js, you can also create class module. This works similar to the functions but the dependencies are passed to the class constructor.
 ```js
 class SomeClass {
     constructor(a) {
