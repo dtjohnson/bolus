@@ -113,10 +113,10 @@ describe("a", function () {
 ```
 The idea is that you create a new, clean injector for every test, inject your module of interest and any dependencies, and then run your test.
  
-If you use [Jasmine](http://jasmine.github.io/) or [Mocha](https://mochajs.org/), bolus will handle the lifecycle of the injector for you. Simply requiring bolus will add all of the injector methods on the global scope. Each of these methods apply only to the injector for the current test. So the test for 'a' would become:
+If you use [Jasmine](http://jasmine.github.io/) or [Mocha](https://mochajs.org/), bolus will handle the lifecycle of the injector for you. Simply call the [Injector.loadTestGlobals](#Injector.loadTestGlobals) method to place add all of the injector methods on the global scope. Each of these methods apply only to the injector for the current test. So the test for 'a' would become:
 ```js
 // a.spec.js
-require("bolus");
+require("bolus").loadTestGlobals();
 
 describe("a", function () {
     it("should return 5", function () {
@@ -130,7 +130,7 @@ describe("a", function () {
 If you have multiple tests with the same setup, you might prefer to use a Jasmine beforeEach:
 ```js
 // a.spec.js
-require("bolus");
+require("bolus").loadTestGlobals();
 
 describe("a", function () {
     var a;
@@ -148,7 +148,7 @@ describe("a", function () {
 You can also easily provide mocks for dependencies to simplify your testing. Here's what a Jasmine test for 'b' could look like:
 ```js
 // b.spec.js
-require("bolus");
+require("bolus").loadTestGlobals();
 
 describe("b", function () {
     beforeEach(registerPath("app/b.js"));
