@@ -135,9 +135,14 @@ describe("Injector", function () {
             injector.register("c", function (b) {
                 return { b: b, me: "c" };
             });
-            injector.register("d", function (a, c) {
+
+            var dResolver = function () {
+                var a = arguments[0];
+                var c = arguments[1];
                 return { a: a, c: c, me: "d" };
-            });
+            };
+            dResolver.$inject = ['a', 'c'];
+            injector.register("d", dResolver);
 
             var a = injector.resolve("a");
             var b = injector.resolve("b");
@@ -178,6 +183,38 @@ describe("Injector", function () {
             expect(injector.resolve("bar")).toBe(value);
         });
 
+        it("should resolve to undefined if an optional dependency doesn't exist", function () {
+            expect(function () {
+                expect(injector.resolve("bar?")).toBeUndefined();
+            }).not.toThrow();
+        });
+
+        it("should resolve using optional dependency", function () {
+            var bar = {};
+            injector.registerValue("bar", bar);
+            expect(function () {
+                expect(injector.resolve("bar?")).toBe(bar);
+            }).not.toThrow();
+        });
+
+        it("should resolve to undefined if an optional dependency doesn't exist using $inject syntax", function () {
+            expect(function () {
+                var resolver = function (bar) {
+                    expect(bar).toBeUndefined();
+                };
+                resolver.$inject = ["bar?"];
+                injector.resolve(resolver);
+            }).not.toThrow();
+        });
+
+        it("should resolve to undefined if an optional dependency doesn't exist using comment syntax", function () {
+            expect(function () {
+                injector.resolve(function (/* optional */ bar) {
+                    expect(bar).toBeUndefined();
+                });
+            }).not.toThrow();
+        });
+
         it("should resolve an array of names", function () {
             var a = { a: "a" };
             var b = { a: "b" };
@@ -198,6 +235,26 @@ describe("Injector", function () {
                 resolvedB = _b_;
                 return [a, _b_];
             });
+
+            expect(resolvedA).toBe(a);
+            expect(resolvedB).toBe(b);
+            expect(result).toEqual([a, b]);
+        });
+
+        it("should resolve a function using $inject syntax", function () {
+            var a = { a: "a" };
+            var b = { a: "b" };
+            injector.registerValue("a", a);
+            injector.registerValue("b", b);
+
+            var resolvedA, resolvedB;
+            var resolver = function () {
+                resolvedA = arguments[0];
+                resolvedB = arguments[1];
+                return [resolvedA, resolvedB];
+            };
+            resolver.$inject = ['a', 'b'];
+            var result = injector.resolve(resolver);
 
             expect(resolvedA).toBe(a);
             expect(resolvedB).toBe(b);
@@ -230,6 +287,29 @@ describe("Injector", function () {
         });
     });
 
+    describe("isRegistered", function () {
+        it("should return false for names that are not registered", function () {
+            expect(injector.isRegistered("foo")).toBe(false);
+        });
+
+        it("should return true for names that are registered", function () {
+            injector.registerValue("foo", {});
+            expect(injector.isRegistered("foo")).toBe(true);
+        });
+    });
+
+    describe("getRegisteredNames", function () {
+        it("should return an array with just the injector if nothing is registered", function () {
+            expect(injector.getRegisteredNames()).toEqual(['$injector']);
+        });
+
+        it("should return an array of names matching the registered values", function () {
+            injector.registerValue("foo", {});
+            injector.registerValue("bar", {});
+            expect(injector.getRegisteredNames()).toEqual(['$injector', 'foo', 'bar']);
+        });
+    });
+
     describe("_getArguments", function () {
         it("should return an empty array for a function with no arguments", function () {
             var args = Injector._getArguments(function () {});
@@ -249,6 +329,11 @@ describe("Injector", function () {
         it("should return an array of arguments for a function with arguments and comments", function () {
             var args = Injector._getArguments(function (a, /* foo */ b, c) {});
             expect(args).toEqual(['a', 'b', 'c']);
+        });
+
+        it("should return an array of arguments for a function with optional dependencies", function () {
+            var args = Injector._getArguments(function (a, /* optional */ b, c) {});
+            expect(args).toEqual(['a', 'b?', 'c']);
         });
     });
 
@@ -293,6 +378,12 @@ describe("Injector", function () {
             var fn = "function (\na, \n b, /* comment */ c, \n, d) {}";
             var args = Injector._getArgumentsFromString(fn);
             expect(args).toEqual(['a', 'b', 'c', 'd']);
+        });
+
+        it("should parse a function with optional dependency in the arguments", function () {
+            var fn = "function (a, b, /* optional */ c, d) {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['a', 'b', 'c?', 'd']);
         });
     });
 });
