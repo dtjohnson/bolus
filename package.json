@@ -1,6 +1,6 @@
 {
   "name": "bolus",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Simple dependency injection module for Node.js with inspiration from AngularJS.",
   "main": "lib/Injector.js",
   "scripts": {
