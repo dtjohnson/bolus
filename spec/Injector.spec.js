@@ -385,5 +385,23 @@ describe("Injector", function () {
             var args = Injector._getArgumentsFromString(fn);
             expect(args).toEqual(['a', 'b', 'c?', 'd']);
         });
+
+        it("should parse a class with a constructor", function () {
+            var fn = "class { constructor(a, b, c) {}; }";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['a', 'b', 'c']);
+        });
+
+        it("should parse a class with a function before the constructor", function () {
+            var fn = "class { foo() {}; constructor(a, b, c) {}; }";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual(['a', 'b', 'c']);
+        });
+
+        it("should parse a class without a constructor", function () {
+            var fn = "class {}";
+            var args = Injector._getArgumentsFromString(fn);
+            expect(args).toEqual([]);
+        });
     });
 });
